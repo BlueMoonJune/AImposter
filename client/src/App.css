@@ -1,42 +1,52 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+:root {
   text-align: center;
+  --theme-main: #000000;
+  --theme-secondary: #ffffff;
+  --theme-accent: #dd00ff;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  margin: 0px;
+  padding: 0px;
+  background-color: var(--theme-main);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.login-container {
+  margin: 0px;
+  padding: 0px;
+  background-color: var(--theme-main);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.login-header {
+  margin: 0px;
+  padding: 0px;
+  color: var(--theme-accent);
+  font-size: 50px;
+  text-shadow: 0px 0px 20px var(--theme-accent);
 }
 
-.card {
-  padding: 2em;
+.login-subheader {
+  margin: 0px;
+  padding: 0px;
+  padding-top: 10px;
+  color: var(--theme-secondary);
+  font-size: 22px;
 }
 
-.read-the-docs {
-  color: #888;
+.login-play-button {
+  outline: none;
+  background: none;
+  margin-top: 200px;
+  padding: 15px;
+  padding-right: 100px;
+  padding-left: 100px;
+  border: 1px solid var(--theme-accent);
+  border-radius: 5px;
+  color: var(--theme-secondary);
+  transition: background-color 0.5s;
+}
+
+.login-play-button:hover {
+  cursor: pointer;
+  background: var(--theme-accent);
 }
