@@ -1,6 +1,6 @@
 :root {
   text-align: center;
-  --theme-main: #000000;
+  --theme-main: #222222;
   --theme-secondary: #ffffff;
   --theme-accent: #dd00ff;
 }
@@ -23,6 +23,7 @@ body {
   color: var(--theme-accent);
   font-size: 50px;
   text-shadow: 0px 0px 20px var(--theme-accent);
+  font-family: sans-serif;
 }
 
 .login-subheader {
@@ -31,6 +32,7 @@ body {
   padding-top: 10px;
   color: var(--theme-secondary);
   font-size: 22px;
+  font-family: cursive;
 }
 
 .login-play-button {
@@ -44,9 +46,12 @@ body {
   border-radius: 5px;
   color: var(--theme-secondary);
   transition: background-color 0.5s;
+  font-family: cursive;
+  font-size: 25px;
 }
 
 .login-play-button:hover {
   cursor: pointer;
   background: var(--theme-accent);
+  box-shadow: 0 0 50px var(--theme-accent);
 }
