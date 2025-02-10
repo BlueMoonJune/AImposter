@@ -5,8 +5,7 @@ const http = require('http');
 const WebSocket = require('ws');
 
 const app = express();
-const server = http.createServer(app);
-const ws = new WebSocket.Server({ server });
+const ws = new WebSocket.Server({ port: 8080 });
 
 ws.on('connection', ws => {
   console.log('Client connected');
@@ -26,7 +25,7 @@ ws.on('connection', ws => {
 });
 
 app.use(express.json());
-app.use(cors()); 
+app.use(cors());
 
 app.post("/api/users", async (req, res) => {
 });

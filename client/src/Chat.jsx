@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import "./Chat.css";
 
-
 console.log("test")
-var sock = new WebSocket("http://127.0.0.1:8484");
+var sock = new WebSocket("ws://127.0.0.1:8080");
 
 sock.addEventListener("open", (event) => {
   console.log("connected")
-  socket.send("Test message");
+  sock.send("Test message");
 });
 
 const Chat = () => {
