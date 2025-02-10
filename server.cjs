@@ -7,12 +7,20 @@ const WebSocket = require('ws');
 const app = express();
 const ws = new WebSocket.Server({ port: 8080 });
 
+var sockets = [];
+
 ws.on('connection', ws => {
   console.log('Client connected');
+  sockets.push(ws);
 
   ws.on('message', message => {
     console.log(`Received: ${message}`);
-    ws.send(`Server received: ${message}`);
+    for (const i in sockets) {
+      if (sockets[i] != ws) {
+        console.log(`sending to ${i}`);
+        sockets[i].send(message);
+      }
+    }
   });
 
   ws.on('close', () => {

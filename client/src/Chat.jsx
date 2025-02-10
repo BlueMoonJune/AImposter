@@ -32,15 +32,16 @@ const Chat = () => {
   const [timer, setTimer] = useState(60);
   
   useEffect(() => {
-    if (timer > 0) {
-      const interval = setInterval(() => {
-        setTimer((prev) => Math.max(0, prev-1));
-      }, 1000);
-
-      return () => clearInterval(interval);
-    } else {
-      naviagate("/vote");
-    }
+    sock.addEventListener("message", (event) => {
+      event.data.text().then((text) => {
+        console.log(messages);
+          setMessages((prev) => {
+            console.log(prev)
+            if (prev.length == 0 || prev[prev.length-1].text != text)
+              return [...prev, { text, isYou: false }]
+          })
+      });
+    });
   }, [timer]);
 
   const sendMessage = () => {
@@ -48,6 +49,7 @@ const Chat = () => {
       return;
 
     setMessages((prev) => [...prev, { text: input, isYou: true }]);
+    sock.send(input)
     setInput("");
   };
 
