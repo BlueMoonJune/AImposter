@@ -6,16 +6,24 @@ var sock = new WebSocket("ws://127.0.0.1:8080");
 
 sock.addEventListener("open", (event) => {
   console.log("connected")
-  sock.send("Test message");
 });
+
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-
   useEffect(() => {
-    setMessages([{text:"Test from other", isYou:false},{text:"From me test",isYou:true}]);
+    sock.addEventListener("message", (event) => {
+      event.data.text().then((text) => {
+        console.log(messages);
+          setMessages((prev) => {
+            console.log(prev)
+            if (prev.length == 0 || prev[prev.length-1].text != text)
+              return [...prev, { text, isYou: false }]
+          })
+      });
+    });
 
   }, []);
 
@@ -24,6 +32,7 @@ const Chat = () => {
       return;
 
     setMessages((prev) => [...prev, { text: input, isYou: true }]);
+    sock.send(input)
     setInput("");
   };
 
