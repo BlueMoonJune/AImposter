@@ -5,6 +5,11 @@
   padding: 10px;
 }
 
+.chat-timer-display {
+  color: var(--theme-accent);
+  text-shadow: 0 0 10px var(--theme-accent);
+}
+
 .chat-box {
   flex: 1;
   overflow-y: auto;

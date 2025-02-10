@@ -1,0 +1,16 @@
+.vote-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vote-input {
+  display: flex;
+  flex-direction: row;
+  margin-top: 50px;
+}
+
+.vote-or {
+  color: var(--theme-secondary);
+  margin: 20px;
+}
