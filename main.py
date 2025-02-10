@@ -3,11 +3,13 @@ import time
 import json
 import threading
 import random
-from websockets.sync.server import serve
+import asyncio
+from websockets import serve
 
 sockets = {}
 
-def messageHandler(socket):
+async def messageHandler(socket, i):
+    print("socket started")
     for message in socket:
         socket.send("hello!")
         print(message)
@@ -21,9 +23,6 @@ class handler(BaseHTTPRequestHandler):
 
         message = ''.join(open("index.html").readlines()).replace("$$$IDENTIFIER", str(id))
         self.wfile.write(bytes(message, "utf8"))
-        with serve(messageHandler, "localhost", 8484) as server:
-            s = threading.Thread(None, server.serve_forever)
-            s.start()
 
 '''
     def do_POST(self):
@@ -55,5 +54,16 @@ class handler(BaseHTTPRequestHandler):
         print(awaitingMessages)
 '''
 
-with HTTPServer(('', 8000), handler) as server:
-    server.serve_forever()
+async def httpserver():
+    with HTTPServer(('', 8000), handler) as server:
+        server.serve_forever()
+
+async def main():
+    socket = await serve(messageHandler, "0.0.0.0", 8484)
+    sockserv = socket.serve_forever()
+    httpserv = httpserver()
+    asyncio.create_task(sockserv)
+    asyncio.create_task(httpserv)
+
+print("g")
+asyncio.run(main())
