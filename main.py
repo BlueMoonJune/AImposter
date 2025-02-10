@@ -1,4 +1,4 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer, SimpleHTTPRequestHandler
 import time
 import json
 import threading
@@ -14,16 +14,10 @@ async def messageHandler(socket, i):
         socket.send("hello!")
         print(message)
 
-class handler(BaseHTTPRequestHandler):
+class handler(SimpleHTTPRequestHandler):
     def do_GET(self):
-        id = random.randint(0, 1000)
-        self.send_response(200)
-        self.send_header('Content-type','text/html')
-        self.end_headers()
-
-        message = ''.join(open("index.html").readlines()).replace("$$$IDENTIFIER", str(id))
-        self.wfile.write(bytes(message, "utf8"))
-
+        self.path = "client/dist" + self.path
+        SimpleHTTPRequestHandler.do_GET(self)
 '''
     def do_POST(self):
         global awaitingMessages
@@ -55,7 +49,7 @@ class handler(BaseHTTPRequestHandler):
 '''
 
 async def httpserver():
-    with HTTPServer(('', 8000), handler) as server:
+    with HTTPServer(('', 8000), SimpleHTTPRequestHandler) as server:
         server.serve_forever()
 
 async def main():
@@ -64,6 +58,6 @@ async def main():
     httpserv = httpserver()
     asyncio.create_task(sockserv)
     asyncio.create_task(httpserv)
+    print(socket)
 
-print("g")
 asyncio.run(main())

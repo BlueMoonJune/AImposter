@@ -1,16 +1,27 @@
 import { useState, useEffect } from "react";
 import "./Chat.css";
 
+
+console.log("test")
+var sock = new WebSocket("http://127.0.0.1:8484");
+
+sock.addEventListener("open", (event) => {
+  console.log("connected")
+  socket.send("Test message");
+});
+
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
+
   useEffect(() => {
     setMessages([{text:"Test from other", isYou:false},{text:"From me test",isYou:true}]);
+
   }, []);
 
   const sendMessage = () => {
-    if (input.trim() === "") 
+    if (input.trim() === "")
       return;
 
     setMessages((prev) => [...prev, { text: input, isYou: true }]);
