@@ -4,49 +4,41 @@ const path = require("path");
 const http = require('http');
 const fs = require("fs");
 const WebSocket = require('ws');
+const OpenAI = require("openai");
 
 const app = express();
 const ws = new WebSocket.Server({ port: 8080 });
 
-const apiKey = fs.readFileSync("deepseekkey.txt", "utf-8");
-const apiUrl = "https://api.deepseek.com/v1/chat/completions";
-
-const data = {
-  model: "deepseek-chat",
-  messages: [{ role: "system", content: "You are just a chill high schooler" }],
-};
-
 const getAIMessage = (message) => {
-  data.messages.push({ role: "user", content: message });
-  fetch(apiUrl, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`Deepseek Error: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(responseData => {
-    return responseData.choices[0].message.content;
-  })
-  .catch(error => {
-    console.error("Deepseek Error:", error);
+  const apiKey = fs.readFileSync("key.txt", "utf-8");
+
+  const openai = new OpenAI({
+    apiKey: apiKey,
   });
+
+  try {
+    const completion = openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      store: false,
+      messages: [
+        {"role": "system", "content": "You are a gen-z highschool who likes stem activities and sometimes using 'brainrot' words."},
+        {"role": "user", "content": message},
+      ],
+    });
+
+    completion.then((result) => console.log(result.choices[0].message));
+  } catch (error) {
+    console.log("API Call failed: "+err);
+  }
 }
+
+getAIMessage("What's up my skibidi sigma!");
 
 var sockets = [];
 
 ws.on('connection', async ws => {
   console.log('Client connected');
   sockets.push(ws);
-
-  console.log(getAIMessage("What's up my skibidi sigma!"));
 
   ws.on('message', message => {
     console.log(`Received: ${message}`);

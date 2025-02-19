@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import "./Chat.css";
 
 console.log("test")
-var sock = new WebSocket("ws://127.0.0.1:8080");
+var sock = new WebSocket(`${window.location.origin}`);
 
-sock.addEventListener("open", (event) => {
+sock.addEventListener("connected", (event) => {
   console.log("connected")
 });
 
