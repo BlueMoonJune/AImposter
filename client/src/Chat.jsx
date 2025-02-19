@@ -17,7 +17,7 @@ import "./Chat.css";
 //  }
 //});
 var url = window.location.origin
-console.log(url.substring(0, url.indexOf(":", 5)) + ":8080")
+//console.log(url.substring(0, url.indexOf(":", 5)) + ":8080")
 var sock = new WebSocket(url.substring(0, url.indexOf(":", 5)) + ":8080");
 
 sock.addEventListener("connected", (event) => {
