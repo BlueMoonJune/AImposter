@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Chat.css";
 
-var sock = new WebSocket(`${window.location.origin}`);
-
 //sock.addEventListener("message", (event) => {
 //  const data = event.data;
 //  const deliminator = data.indexOf(":");
@@ -28,11 +26,20 @@ sock.addEventListener("connected", (event) => {
 
 var started = false;
 
+var init = false
+
+
 const Chat = () => {
 
   const naviagate = useNavigate();
 
-  sock.addEventListener("message", (event) => {
+
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [timer, setTimer] = useState(60);
+
+  if (!init) {
+    sock.addEventListener("message", (event) => {
       var json = event.data
       console.log(json);
       var data = JSON.parse(json);
@@ -41,11 +48,9 @@ const Chat = () => {
       } else if (data.type == "start") {
         started = true;
       }
-  });
-
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
-  const [timer, setTimer] = useState(60);
+    });
+    init = true;
+  }
 
   useEffect(() => {
     setInterval(() => {
@@ -62,33 +67,35 @@ const Chat = () => {
     setInput("");
   };
 
-  return (
-    <div className="chat-container">
-      {started} ? (
-        <h1 className="chat-timer-display">Time left: {timer}</h1>
-        <div className="chat-box">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`message ${msg.isYou ? "message-you" : "message-other"}`}
-            >{msg.text}</div>
-          ))}
-        </div>
-        <div className="input-container">
-          <input
-            className="chat-input"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            placeholder="Type a message..."
-          />
-          <button className="chat-button" onClick={sendMessage}>Send</button>
-        </div>
-      ) : (
+  if (started) {
+    return (
+      <div className="chat-container">
+          <h1 className="chat-timer-display">Time left: {timer}</h1>
+          <div className="chat-box">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`message ${msg.isYou ? "message-you" : "message-other"}`}
+              >{msg.text}</div>
+            ))}
+          </div>
+          <div className="input-container">
+            <input
+              className="chat-input"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              placeholder="Type a message..."
+            />
+            <button className="chat-button" onClick={sendMessage}>Send</button>
+          </div>
+      </div>
+    );
+  } else {
+    return (
         <p>Please wait for host to start.</p>
-      )
-    </div>
-  );
+    );
+  }
 }
 
 export default Chat;

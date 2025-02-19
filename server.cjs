@@ -9,8 +9,9 @@ const readline = require('node:readline');
 const app = express();
 const ws = new WebSocket.Server({ port: 8080 });
 
-const getAIMessage = async (message) => {
+const getAIMessage = async (messages) => {
   const apiKey = fs.readFileSync("key.txt", "utf-8");
+  console.log(messages)
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -20,10 +21,7 @@ const getAIMessage = async (message) => {
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        messages: [
-          { "role": "system", "content": "You are a Gen-Z high schooler who likes STEM activities and sometimes uses 'brainrot' words." },
-          { "role": "user", "content": message }
-        ]
+        messages: messages
       })
     });
 
@@ -33,13 +31,11 @@ const getAIMessage = async (message) => {
     }
 
     const data = await response.json();
-    console.log(data.choices[0].message.content);
+    return data.choices[0].message.content
   } catch (error) {
     console.error("Error fetching AI response:", error);
   }
 }
-
-getAIMessage("Hey!");
 
 var sockets = [];
 
@@ -49,13 +45,19 @@ ws.on('connection', ws => {
   console.log('Client connected');
   sockets.push(ws);
 
-  ws.on('message', message => {
+  ws.on('message', data => {
+    var message = data.toString();
     console.log(`Received: ${message}`);
-    for (const i in sockets) {
-      if (sockets[i] != ws) {
-        console.log(`sending to ${i}`);
-        sockets[i].send(message);
-      }
+    var pairing = pairings[ws];
+    if ("type" in pairing && pairing["type"] == "AI") {
+      pairing.messages.push({role: "user", content: message});
+      response = getAIMessage(pairing.messages).then((response) => {
+        ws.send(JSON.stringify({type: "message", text: response}));
+        pairing.messages.push({role: "assistant", content: response});
+      });
+
+    } else {
+      ws.send(JSON.stringify({type: "message", text: message}));
     }
   });
 
@@ -94,7 +96,7 @@ rl.question("Press Enter to start\n", _ => {
     sockets[i].send(JSON.stringify({type: "start"}))
   }
   while (sockets.length > 0) {
-    if (Math.random() < 0.5) {
+    if (Math.random() < 0.0) {
       let i = Math.random(0, sockets.length)
       var pair = sockets[i]
       pairings[sockets[0]] = pair
@@ -102,7 +104,7 @@ rl.question("Press Enter to start\n", _ => {
       sockets.pop(i)
       sockets.pop(0)
     } else {
-      pairings[sockets[0]] = {type: "AI"}
+      pairings[sockets[0]] = {type: "AI", messages: [{role: "system", content: "You are a Gen-Z high schooler who likes STEM activities and sometimes uses 'brainrot' words."}]}
       sockets.pop(0)
     }
   }
