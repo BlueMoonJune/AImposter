@@ -17,19 +17,19 @@ import "./Chat.css";
 //    console.warn("Invalid message format: ", data);
 //  }
 //});
+var url = window.location.origin
+console.log(url.substring(0, url.indexOf(":", 5)) + ":8080")
+var sock = new WebSocket(url.substring(0, url.indexOf(":", 5)) + ":8080");
+
+sock.addEventListener("open", (event) => {
+  console.log("connected")
+});
 
 var started = false;
 
 const Chat = () => {
 
   const naviagate = useNavigate();
-
-  console.log("test")
-  var sock = new WebSocket("ws://127.0.0.1:8080");
-
-  sock.addEventListener("open", (event) => {
-    console.log("connected")
-  });
 
   sock.addEventListener("message", (event) => {
       var json = event.data
@@ -50,7 +50,6 @@ const Chat = () => {
     setInterval(() => {
       setTimer((prev) => prev - 1)
     }, 1000);
-    console.log("gug")
   }, []);
 
   const sendMessage = () => {
