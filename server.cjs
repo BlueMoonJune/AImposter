@@ -4,39 +4,42 @@ const path = require('path');
 const http = require('http');
 const fs = require("fs");
 const WebSocket = require('ws');
-<<<<<<< HEAD
-const OpenAI = require("openai");
-=======
 const readline = require('node:readline');
->>>>>>> 91913acc24aed4176698b4b34d7016758a092c1a
 
 const app = express();
 const ws = new WebSocket.Server({ port: 8080 });
 
-const getAIMessage = (message) => {
+const getAIMessage = async (message) => {
   const apiKey = fs.readFileSync("key.txt", "utf-8");
-
-  const openai = new OpenAI({
-    apiKey: apiKey,
-  });
-
   try {
-    const completion = openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      store: false,
-      messages: [
-        {"role": "system", "content": "You are a gen-z highschool who likes stem activities and sometimes using 'brainrot' words."},
-        {"role": "user", "content": message},
-      ],
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { "role": "system", "content": "You are a Gen-Z high schooler who likes STEM activities and sometimes uses 'brainrot' words." },
+          { "role": "user", "content": message }
+        ]
+      })
     });
 
-    completion.then((result) => console.log(result.choices[0].message));
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Error ${response.status}: ${errorData.error.message}`);
+    }
+
+    const data = await response.json();
+    console.log(data.choices[0].message.content);
   } catch (error) {
-    console.log("API Call failed: "+err);
+    console.error("Error fetching AI response:", error);
   }
 }
 
-getAIMessage("What's up my skibidi sigma!");
+getAIMessage("Hey!");
 
 var sockets = [];
 
