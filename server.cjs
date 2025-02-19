@@ -1,10 +1,14 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
 const http = require('http');
 const fs = require("fs");
 const WebSocket = require('ws');
+<<<<<<< HEAD
 const OpenAI = require("openai");
+=======
+const readline = require('node:readline');
+>>>>>>> 91913acc24aed4176698b4b34d7016758a092c1a
 
 const app = express();
 const ws = new WebSocket.Server({ port: 8080 });
@@ -36,7 +40,9 @@ getAIMessage("What's up my skibidi sigma!");
 
 var sockets = [];
 
-ws.on('connection', async ws => {
+var pairings = {};
+
+ws.on('connection', ws => {
   console.log('Client connected');
   sockets.push(ws);
 
@@ -72,4 +78,29 @@ const port = 8000;
 const ip = "0.0.0.0";
 app.listen(port, ip, () => {
   console.log(`Server is running on http://${ip}:${port}`);
+});
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+rl.question("Press Enter to start\n", _ => {
+  console.log("Starting...")
+  for (const i in sockets) {
+    sockets[i].send(JSON.stringify({type: "start"}))
+  }
+  while (sockets.length > 0) {
+    if (Math.random() < 0.5) {
+      let i = Math.random(0, sockets.length)
+      var pair = sockets[i]
+      pairings[sockets[0]] = pair
+      pairings[pair] = sockets[0]
+      sockets.pop(i)
+      sockets.pop(0)
+    } else {
+      pairings[sockets[0]] = {type: "AI"}
+      sockets.pop(0)
+    }
+  }
 });
