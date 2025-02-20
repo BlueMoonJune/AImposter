@@ -66,7 +66,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [vote, setVote] = useState(false);
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(60);
   const timerRef = useRef(timer);
 
   if (!init) {
@@ -80,7 +80,7 @@ const Chat = () => {
         setMessages([]);
         started = true;
         setVote(false);
-        setTimer((prev) => 10);
+        setTimer((prev) => 60);
         const interval = setInterval(() => {
           setTimer((prev) => {
             if (prev <= 1) {
@@ -93,6 +93,7 @@ const Chat = () => {
         }, 1000);
       } else if (data.type == "result") {
         won = data.result ? "correct" : "wrong";
+        console.log(won);
       }
     });
     init = true;
