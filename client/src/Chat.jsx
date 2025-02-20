@@ -27,30 +27,18 @@ sock.addEventListener("connected", (event) => {
 
 var started = false;
 
-var init = false
+var init = false;
+
+var won = "";
 
 const Vote = () => {
-  const [isAi, setIsAi] = useState(false);
-  const [won, setWon] = useState("");
 
   const handleAI = () => {
-    const status = window.localStorage.getItem("status");
-    if (status !== null && status === "ai") {
-      setIsAi(true);
-    }
-    if (status === "ai") {
-      setWon("won");
-    }
+    sock.send(JSON.stringify({type: "vote", vote: "AI"}));
   }
 
   const handleHuman = () => {
-    const status = window.localStorage.getItem("status");
-    if (status !== null && status === "ai") {
-      setIsAi(true);
-    } 
-    if (isAi) {
-      setWon("lost");
-    }
+    sock.send(JSON.stringify({type: "vote", vote: "Human"}));
   }
 
   return (
@@ -63,9 +51,9 @@ const Vote = () => {
       </div>
       {won.length !== 0 && (
         <p className="guess-won-display">
-          You {won}, it was {isAi ? "an AI" : "a Human"}.
-        </p> 
-      )} 
+          You were {won}!
+        </p>
+      )}
     </div>
   );
 }
@@ -87,12 +75,24 @@ const Chat = () => {
       console.log(json);
       var data = JSON.parse(json);
       if (data.type == "message") {
-        setTimeout(() => {
-          setMessages((prev) => [...prev, {text: data.text, isYou: false }]);
-        }, (Math.random()*3000)+1000);
+        setMessages((prev) => [...prev, {text: data.text, isYou: false }]);
       } else if (data.type == "start") {
+        setMessages([]);
         started = true;
+        setVote(false);
         setTimer((prev) => 10);
+        const interval = setInterval(() => {
+          setTimer((prev) => {
+            if (prev <= 1) {
+              clearInterval(interval);
+              setVote(true);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      } else if (data.type == "result") {
+        won = data.result ? "correct" : "wrong";
       }
     });
     init = true;
@@ -101,21 +101,6 @@ const Chat = () => {
   useEffect(() => {
     timerRef.current = timer;
   }, [timer]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setVote(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [navigate]);
 
   const sendMessage = () => {
     if (input.trim() === "")

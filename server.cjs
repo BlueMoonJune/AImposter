@@ -117,30 +117,29 @@ ws.on('connection', ws => {
   sockets.push(ws);
 
   ws.on('message', data => {
-    var message = data.toString();
-    console.log(`Received: ${message}`);
+    var message = JSON.parse(data.toString());
+    console.log(message);
     console.log(id, pairings);
     var pairing = pairings[id];
 
-    if (message.indexOf("Vote: ") != -1) {
+    if (message.type == "vote") {
       var vote = {
-        guess: message == "Vote: AI" ? "AI" : "Human",
+        guess: message.vote,
         answer: typeof pairing == "number" ? "Human" : "AI"
       }
       ws.send(JSON.stringify({type: "result", result: vote.guess == vote.answer}));
       votes.push(vote);
     }
 
-    if (typeof pairing == "number") {
-      sockets[pairing].send(JSON.stringify({type: "message", text: message}));
+    else if (typeof pairing == "number") {
+      sockets[pairing].send(JSON.stringify({type: "message", text: message.text}));
     } else if ("type" in pairing && pairing["type"] == "AI") {
-      pairing.messages.push({role: "user", content: message});
+      pairing.messages.push({role: "user", content: message.text});
       response = getAIMessage(pairing.messages).then((response) => {
         ws.send(JSON.stringify({type: "message", text: response}));
         pairing.messages.push({role: "assistant", content: response});
       });
 
-    } else {
     }
   });
 
@@ -173,30 +172,29 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-rl.question("Press Enter to start\n", _ => {
-  console.log("Starting...")
-  var socketIDs = [...sockets.keys()];
-  console.log(socketIDs)
-  while (socketIDs.length > 0) {
-    if (socketIDs.length > 1 && Math.random() < 1) {
-      let i = Math.floor(Math.random() * (socketIDs.length - 1) + 1)
-      console.log(i)
-      var pair = socketIDs[i]
-      socketIDs.splice(i, 1)
-      var me = socketIDs[0];
-      console.log(pair == me);
-      socketIDs.splice(0, 1)
-      pairings[me] = pair
-      pairings[pair] = me
-      console.log(`pairing ${me} to ${pair}`)
-    } else {
-      pairings[socketIDs[0]] = {type: "AI", messages: [{role: "system", content: prompt}]}
-      console.log(`pairing ${me} to AI`)
-      socketIDs.splice(0, 1)
+function start() {
+  rl.question("Press Enter to start\n", _ => {
+    console.log("Starting...")
+    var socketIDs = [...sockets.keys()];
+    while (socketIDs.length > 0) {
+      if (socketIDs.length > 1 && Math.random() < 1) {
+        let i = Math.floor(Math.random() * (socketIDs.length - 1) + 1)
+        var pair = socketIDs[i]
+        socketIDs.splice(i, 1)
+        var me = socketIDs[0];
+        socketIDs.splice(0, 1)
+        pairings[me] = pair
+        pairings[pair] = me
+      } else {
+        pairings[socketIDs[0]] = {type: "AI", messages: [{role: "system", content: prompt}]}
+        socketIDs.splice(0, 1)
+      }
     }
-  }
-  for (let i in sockets) {
-    sockets[i].send(JSON.stringify({type: "start"}))
-  }
-  console.log(pairings)
-});
+    for (let i in sockets) {
+      sockets[i].send(JSON.stringify({type: "start"}))
+    }
+    start();
+  });
+}
+
+start();
