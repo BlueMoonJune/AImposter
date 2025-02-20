@@ -1,28 +1,17 @@
 import "./Vote.css";
 import { useState } from "react";
+import { sock } from "./Chat.jsx";
 
 const Vote = () => {
   const [isAi, setIsAi] = useState(false);
   const [won, setWon] = useState("");
 
   const handleAI = () => {
-    const status = window.localStorage.getItem("status");
-    if (status !== null && status === "ai") {
-      setIsAi(true);
-    }
-    if (status === "ai") {
-      setWon("won");
-    }
+    sock.send("Vote: AI");
   }
 
   const handleHuman = () => {
-    const status = window.localStorage.getItem("status");
-    if (status !== null && status === "ai") {
-      setIsAi(true);
-    } 
-    if (isAi) {
-      setWon("lost");
-    }
+    sock.send("Vote: Human");
   }
 
   return (
@@ -36,8 +25,8 @@ const Vote = () => {
       {won.length !== 0 && (
         <p className="guess-won-display">
           You {won}, it was {isAi ? "an AI" : "a Human"}.
-        </p> 
-      )} 
+        </p>
+      )}
     </div>
   );
 }
