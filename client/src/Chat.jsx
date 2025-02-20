@@ -47,7 +47,7 @@ const Chat = () => {
       if (data.type == "message") {
         setTimeout(() => {
           setMessages((prev) => [...prev, {text: data.text, isYou: false }]);
-        }, (Math.random()*5000)+3000);
+        }, (Math.random()*3000)+1000);
       } else if (data.type == "start") {
         started = true;
       }
