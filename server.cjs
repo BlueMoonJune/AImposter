@@ -177,7 +177,7 @@ function start() {
     console.log("Starting...")
     var socketIDs = [...sockets.keys()];
     while (socketIDs.length > 0) {
-      if (socketIDs.length > 1 && Math.random() < 1) {
+      if (socketIDs.length > 1 && Math.random() < 0.5) {
         let i = Math.floor(Math.random() * (socketIDs.length - 1) + 1)
         var pair = socketIDs[i]
         socketIDs.splice(i, 1)

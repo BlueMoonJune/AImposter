@@ -32,13 +32,16 @@ var init = false;
 var won = "";
 
 const Vote = () => {
+  const [update, setUpdate] = useState(false)
 
   const handleAI = () => {
     sock.send(JSON.stringify({type: "vote", vote: "AI"}));
+    setTimeout(() => setUpdate((prev) => !prev), 2000);
   }
 
   const handleHuman = () => {
     sock.send(JSON.stringify({type: "vote", vote: "Human"}));
+    setTimeout(() => setUpdate((prev) => !prev), 2000);
   }
 
   return (
