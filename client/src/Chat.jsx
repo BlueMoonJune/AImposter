@@ -92,6 +92,7 @@ const Chat = () => {
         }, (Math.random()*3000)+1000);
       } else if (data.type == "start") {
         started = true;
+        setTimer((prev) => 60);
       }
     });
     init = true;
@@ -161,3 +162,4 @@ const Chat = () => {
 }
 
 export default Chat;
+export socket sock;
