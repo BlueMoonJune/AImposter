@@ -1,16 +1,18 @@
-.vote-container {
+.guess-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
 }
 
-.vote-input {
+.guess-buttons {
   display: flex;
   flex-direction: row;
-  margin-top: 50px;
+  align-items: center;
+  gap: 10px;
 }
 
-.vote-or {
-  color: var(--theme-secondary);
-  margin: 20px;
+.guess-or {
+  color: white;
+  margin: 0;
 }

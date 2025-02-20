@@ -73,3 +73,9 @@
   background: var(--theme-accent);
   box-shadow: 0 0 50px var(--theme-accent);
 }
+
+.wait-for-host {
+  color: var(--theme-secondary);
+  text-shadow: 0 0 10px var(--theme-accent);
+  font-size: 50px;
+}

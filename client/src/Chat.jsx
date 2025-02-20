@@ -31,12 +31,12 @@ var init = false
 
 const Chat = () => {
 
-  const naviagate = useNavigate();
+  const navigate = useNavigate();
 
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(5);
 
   if (!init) {
     sock.addEventListener("message", (event) => {
@@ -55,8 +55,11 @@ const Chat = () => {
   useEffect(() => {
     setInterval(() => {
       setTimer((prev) => prev - 1)
+      if (timer <= 0) {
+        navigate("/vote");
+      }
     }, 1000);
-  }, []);
+  }, [timer]);
 
   const sendMessage = () => {
     if (input.trim() === "")
@@ -93,7 +96,7 @@ const Chat = () => {
     );
   } else {
     return (
-        <p>Please wait for host to start.</p>
+        <p className="wait-for-host">Please wait for host to start.</p>
     );
   }
 }

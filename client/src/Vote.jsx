@@ -1,17 +1,43 @@
 import "./Vote.css";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Vote = () => {
-  const navigate = useNavigate();
+  const [isAi, setIsAi] = useState(false);
+  const [won, setWon] = useState("");
+
+  const handleAI = () => {
+    const status = window.localStorage.getItem("status");
+    if (status !== null && status === "ai") {
+      setIsAi(true);
+    }
+    if (status === "ai") {
+      setWon("won");
+    }
+  }
+
+  const handleHuman = () => {
+    const status = window.localStorage.getItem("status");
+    if (status !== null && status === "ai") {
+      setIsAi(true);
+    } 
+    if (isAi) {
+      setWon("lost");
+    }
+  }
 
   return (
-    <div className="vote-container">
-      <h1 className="login-header">So, Was it an AI or a Human?</h1>
-      <div className="vote-input">
-        <button className="chat-button" onClick={() => { navigate("/"); }}>AI</button>
-        <p className="vote-or">or</p>
-        <button className="chat-button" onClick={() => { navigate("/"); }}>Human</button>
+    <div className="guess-container">
+      <h1 className="login-header">So, was it an AI or a Human?</h1>
+      <div className="guess-buttons">
+        <button className="login-play-button" onClick={handleAI}>AI</button>
+        <p className="guess-or">or</p>
+        <button className="login-play-button" onClick={handleHuman}>Human</button>
       </div>
+      {won.length !== 0 && (
+        <p className="guess-won-display">
+          You {won}, it was {isAi ? "an AI" : "a Human"}.
+        </p> 
+      )} 
     </div>
   );
 }
