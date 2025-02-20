@@ -9,10 +9,34 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 25px;
+  padding: 0;
+  margin-top: 200px;
+}
+
+.vote-button {
+  outline: none;
+  background: none;
+  border: 1px solid var(--theme-accent);
+  border-radius: 5px;
+  padding: 20px;
+  padding-left: 25px;
+  padding-right: 25px;
+  color: var(--theme-secondary);
+  transition: background-color 0.5s;
+  font-family: cursive;
+  font-size: 25px;
+  background-color: transparent;
+  transition: background-color 0.5s, box-shadow 0.5s;
+}
+
+.vote-button:hover {
+  cursor: pointer;
+  background-color: var(--theme-main);
+  box-shadow: 0 0 20px var(--theme-main);
 }
 
 .guess-or {
   color: white;
-  margin: 0;
 }

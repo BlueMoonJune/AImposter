@@ -1,3 +1,3 @@
 host:
-	(cd client && npm run build) && node server.cjs
+	(cd client && npm run build && cd ..) && node server.cjs
 

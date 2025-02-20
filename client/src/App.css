@@ -45,11 +45,14 @@ body {
   border: 1px solid var(--theme-accent);
   border-radius: 5px;
   color: var(--theme-secondary);
-  transition: background-color 0.5s;
+  transition: background-color 0.5s, box-shadow 0.5s;
   font-family: cursive;
   font-size: 25px;
+  background-color: transparent;
 }
 
 .login-play-button:hover {
   cursor: pointer;
+  background-color: var(--theme-main);
+  box-shadow: 0 0 20px var(--theme-main);
 }

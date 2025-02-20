@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Chat.css";
 
@@ -36,7 +36,8 @@ const Chat = () => {
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(60);
+  const timerRef = useRef(timer);
 
   if (!init) {
     sock.addEventListener("message", (event) => {
@@ -44,7 +45,9 @@ const Chat = () => {
       console.log(json);
       var data = JSON.parse(json);
       if (data.type == "message") {
-        setMessages((prev) => [...prev, {text: data.text, isYou: false }]);
+        setTimeout(() => {
+          setMessages((prev) => [...prev, {text: data.text, isYou: false }]);
+        }, (Math.random()*5000)+3000);
       } else if (data.type == "start") {
         started = true;
       }
@@ -53,13 +56,24 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    setInterval(() => {
-      setTimer((prev) => prev - 1)
-      if (timer <= 0) {
-        navigate("/vote");
-      }
-    }, 1000);
+    timerRef.current = timer;
   }, [timer]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          window.localStorage.setItem("status", "ai");
+          navigate("/vote");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [navigate]);
 
   const sendMessage = () => {
     if (input.trim() === "")

@@ -29,9 +29,9 @@ const Vote = () => {
     <div className="guess-container">
       <h1 className="login-header">So, was it an AI or a Human?</h1>
       <div className="guess-buttons">
-        <button className="login-play-button" onClick={handleAI}>AI</button>
+        <button className="vote-button" onClick={handleAI}>AI</button>
         <p className="guess-or">or</p>
-        <button className="login-play-button" onClick={handleHuman}>Human</button>
+        <button className="vote-button" onClick={handleHuman}>Human</button>
       </div>
       {won.length !== 0 && (
         <p className="guess-won-display">
