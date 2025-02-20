@@ -29,6 +29,7 @@
   max-width: 60%;
   color: white;
   margin-bottom: 5px;
+  font-family: sans-serif;
 }
 
 .message-you {
@@ -54,6 +55,7 @@
   background: none;
   color: white;
   border-radius: 5px;
+  font-family: sans-serif;
 }
 
 .chat-button {
@@ -64,7 +66,7 @@
   border-radius: 5px;
   color: var(--theme-secondary);
   transition: background-color 0.5s;
-  font-family: cursive;
+  font-family: sans-serif;
   font-size: 18px;
 }
 

@@ -13,6 +13,7 @@
   gap: 25px;
   padding: 0;
   margin-top: 200px;
+  font-family: sans-serif;
 }
 
 .vote-button {
@@ -29,6 +30,7 @@
   font-size: 25px;
   background-color: transparent;
   transition: background-color 0.5s, box-shadow 0.5s;
+  font-family: sans-serif;
 }
 
 .vote-button:hover {
@@ -39,4 +41,5 @@
 
 .guess-or {
   color: white;
+  font-family: sans-serif;
 }

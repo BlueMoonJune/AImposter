@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Chat.css";
+import "./Vote.css";
 
 //sock.addEventListener("message", (event) => {
 //  const data = event.data;
@@ -28,6 +29,46 @@ var started = false;
 
 var init = false
 
+const Vote = () => {
+  const [isAi, setIsAi] = useState(false);
+  const [won, setWon] = useState("");
+
+  const handleAI = () => {
+    const status = window.localStorage.getItem("status");
+    if (status !== null && status === "ai") {
+      setIsAi(true);
+    }
+    if (status === "ai") {
+      setWon("won");
+    }
+  }
+
+  const handleHuman = () => {
+    const status = window.localStorage.getItem("status");
+    if (status !== null && status === "ai") {
+      setIsAi(true);
+    } 
+    if (isAi) {
+      setWon("lost");
+    }
+  }
+
+  return (
+    <div className="guess-container">
+      <h1 className="login-header">So, was it an AI or a Human?</h1>
+      <div className="guess-buttons">
+        <button className="vote-button" onClick={handleAI}>AI</button>
+        <p className="guess-or">or</p>
+        <button className="vote-button" onClick={handleHuman}>Human</button>
+      </div>
+      {won.length !== 0 && (
+        <p className="guess-won-display">
+          You {won}, it was {isAi ? "an AI" : "a Human"}.
+        </p> 
+      )} 
+    </div>
+  );
+}
 
 const Chat = () => {
 
@@ -36,7 +77,8 @@ const Chat = () => {
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [timer, setTimer] = useState(60);
+  const [vote, setVote] = useState(false);
+  const [timer, setTimer] = useState(10);
   const timerRef = useRef(timer);
 
   if (!init) {
@@ -64,8 +106,7 @@ const Chat = () => {
       setTimer((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          window.localStorage.setItem("status", "ai");
-          navigate("/vote");
+          setVote(true);
           return 0;
         }
         return prev - 1;
@@ -84,7 +125,7 @@ const Chat = () => {
     setInput("");
   };
 
-  if (started) {
+  if (started && !vote) {
     return (
       <div className="chat-container">
           <h1 className="chat-timer-display">Time left: {timer}</h1>
@@ -108,9 +149,13 @@ const Chat = () => {
           </div>
       </div>
     );
-  } else {
+  } else if (!started && !vote) {
     return (
         <p className="wait-for-host">Please wait for host to start.</p>
+    );
+  } else {
+    return (
+      <Vote />
     );
   }
 }

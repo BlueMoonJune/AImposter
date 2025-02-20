@@ -29,6 +29,8 @@ RULES
 12.) Make small spelling errors and use very poor grammar, including capatilaztion and puncuation
 13.) Never directly ask if the person is an AI or Human
 
+DONT'T USE CORRECT GRAMMAR, DON'T CAPITALIZE OR USE PUNCTIONATION
+
 LIST OF WORDS TO USE - GEN-Z TALK / SLANG:
 - sigma
 - rizz
@@ -87,7 +89,7 @@ const getAIMessage = async (messages) => {
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "gpt-4o",
         messages: messages
       })
     });

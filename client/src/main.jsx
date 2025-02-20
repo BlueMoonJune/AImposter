@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client"
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.jsx"
 import Chat from "./Chat.jsx"
-import Vote from "./Vote.jsx"
 
 const router = createBrowserRouter([
   {
@@ -13,10 +12,6 @@ const router = createBrowserRouter([
   {
     path: "/chat",
     element: <Chat />
-  },
-  {
-    path: "/vote",
-    element: <Vote />
   },
 ])
 
